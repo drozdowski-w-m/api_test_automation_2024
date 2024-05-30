@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="api_test_automation_2024"
+           tests="1"
+           failures="0"
+           errors="0"
+           skipped="0"
+           time="3,972">
+  <properties />
+  
+  
+            <testcase name="shouldSendRequestToServerAndGetStatusOk" time="3,972" classname="pl.globallogic.configuration.ConfigurationVerificationTest" />
+      
+</testsuite>

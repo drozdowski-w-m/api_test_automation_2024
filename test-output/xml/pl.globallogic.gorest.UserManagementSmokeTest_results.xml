@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="api_test_automation_2024"
+           tests="7"
+           failures="0"
+           errors="0"
+           skipped="0"
+           time="9,081">
+  <properties />
+  
+  
+            <testcase name="validateUserDataAgainstSchema" time="1,211" classname="pl.globallogic.gorest.UserManagementSmokeTest" />
+                <testcase name="shouldListAllUsersInformation" time="0,421" classname="pl.globallogic.gorest.UserManagementSmokeTest" />
+                <testcase name="shoudVerifyUserByName" time="1,280" classname="pl.globallogic.gorest.UserManagementSmokeTest" />
+                <testcase name="listAllWithPagination" time="3,025" classname="pl.globallogic.gorest.UserManagementSmokeTest" />
+                <testcase name="shouldCreateUserAndReturnId" time="0,729" classname="pl.globallogic.gorest.UserManagementSmokeTest" />
+                <testcase name="shouldGetUserInformationById" time="1,226" classname="pl.globallogic.gorest.UserManagementSmokeTest" />
+                <testcase name="shouldUpdateUserWithNewEmail" time="1,189" classname="pl.globallogic.gorest.UserManagementSmokeTest" />
+      
+</testsuite>
