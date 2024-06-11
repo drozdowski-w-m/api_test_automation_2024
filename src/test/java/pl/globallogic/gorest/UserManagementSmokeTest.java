@@ -11,12 +11,14 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import pl.globallogic.gorest.api.UserApi;
 import pl.globallogic.gorest.dto.UserRequestDto;
 import pl.globallogic.gorest.dto.UserResponseDto;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
 
 
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -24,15 +26,96 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class UserManagementSmokeTest {
 
-    private static final String HOST = "https://gorest.co.in/public/v2";
+    private static final Logger logger = LoggerFactory.getLogger(UserManagementSmokeTest.class);
+    private static final String TOKEN = System.getProperty("token");
+    private UserApi userApi;
+
+
+    @BeforeMethod
+    public void testSetUp(){
+        userApi = new UserApi(TOKEN);
+    }
+
+    @AfterMethod
+    public void testCleanUp() {
+        logger.info("Put your test clean up activities here!!");
+    }
+
+    @Test
+    public void shouldListAllUsersInformationWithPaginationOptions() {
+        int user_per_page = 10;
+        int target_page = 3;
+        List<UserResponseDto> users = userApi.getUsers(target_page,user_per_page);
+        Assert.assertNotNull(users.getFirst().id());
+
+    }
+
+    @Test
+    public void shouldCreateUserAndReturnId() {
+        UserRequestDto payload = getUserDataWithRandomEmail();
+        UserResponseDto newUser = userApi.createUser(payload);
+        logger.info("Id for new user is '{}'", newUser.id());
+        Assert.assertNotNull(newUser.id());
+    }
+
+    @Test
+    public void shouldGetUserInformationById() {
+        var user = userApi.createUser(getUserDataWithRandomEmail());
+        UserResponseDto userFromGet = userApi.getUser(user.id());
+        Assert.assertEquals(user.name(), userFromGet.name());
+    }
+
+    @Test
+    public void shouldUpdateUserWithNewEmail() {
+        var user = userApi.createUser(getUserDataWithRandomEmail());
+        String newEmail = "some_email%s@gmail.pl".formatted(RandomStringUtils.randomAlphanumeric(5));
+        logger.info("Generated new user email: {}", newEmail);
+        UserRequestDto updatedUserPayload = new UserRequestDto(user.name(), newEmail, user.gender(), user.status());
+        UserResponseDto updateResponse = userApi.updateUser(user.id(), updatedUserPayload);
+        Assert.assertEquals(newEmail, updateResponse.email());
+    }
+
+    @Test
+    public void shouldDeleteUserFromSystem() {
+        var user = userApi.createUser(getUserDataWithRandomEmail());
+        userApi.deleteUser(user.id());
+        userApi.getResponse().then().assertThat().statusCode(204);
+    }
+
+    @Test
+    public void validateUserDataAgainstSchema() {
+        var user = userApi.createUser(getUserDataWithRandomEmail());
+        userApi.validateResponseAgainstSchema(user.id(), "user_schema.json");
+    }
+
+    private UserRequestDto getUserDataWithRandomEmail() {
+        String randomEmailSuffix = RandomStringUtils.randomAlphanumeric(5);
+        UserRequestDto payload = new UserRequestDto(
+                "Wojciech Drozdowski",
+                "wd%s@gmail.com".formatted(randomEmailSuffix),
+                "male",
+                "active");
+        return payload;
+    }
+
+
+
+
+
+
+  // before refactor
+
+    /*private static final String HOST = "https://gorest.co.in/public/v2";
     private static final String ENDPOINT = "/users";
     private static final Logger logger = LoggerFactory.getLogger(UserManagementSmokeTest.class);
     private static final String ENDPOINT_WITH_ID = "/users/{userId}";
     private static final String TOKEN = System.getProperty("token"); //"edb4afe94ffa5dd5ee817c3eb2ff3a0408777f6781098e96969cd9cb742050d4";
+    private UserApi userApi;
     private RequestSpecification req;
 
     @BeforeMethod
     public void testSetUp(){
+        userApi = new UserApi(TOKEN);
         req = given()
                 .basePath(ENDPOINT)
                 .baseUri(HOST)
@@ -60,8 +143,8 @@ public class UserManagementSmokeTest {
     private UserRequestDto getUserDataWithRandomEmail() {
         String randomEmailSuffix = RandomStringUtils.randomAlphanumeric(5);
         UserRequestDto payload = new UserRequestDto(
-                "Ivan Paulouski",
-                "ivan.paulouski%s@gmail.com".formatted(randomEmailSuffix),
+                "Wojciech Drozdowski",
+                "w.drozd%s@gmail.com".formatted(randomEmailSuffix),
                 "male",
                 "active");
         return payload;
@@ -88,7 +171,7 @@ public class UserManagementSmokeTest {
     public void listAllWithPagination(){
         int user_per_page = 10;
         int target_page = 3;
-        req
+        *//*var users = req
                 .queryParam("page", target_page)
                 .queryParam("per_page", user_per_page)
         .when()
@@ -96,19 +179,21 @@ public class UserManagementSmokeTest {
         .then()
                 .statusCode(200)
                 .header("x-pagination-limit", equalTo(String.valueOf(user_per_page)))
-                .body("[0].id", notNullValue());
+                .body("[0].id", notNullValue());*//*
+
+        Assert.assertNotNull(users.getFirst().id());
     }
 
     @Test
     public void shouldCreateUserAndReturnId(){
         String randomEmailPrefix = RandomStringUtils.randomAlphanumeric(5);
     // homework: pass the payload as a string
-        /*Map<String, String> payload = Map.of(
+        *//*Map<String, String> payload = Map.of(
             "name", "Wojciech Drozdowski",
                 "email","wojciech.drozdowski%s@gmail.com".formatted(randomEmailPrefix),
                 "gender", "male",
                 "status","active"
-        );*/
+        );*//*
         UserRequestDto payload = new UserRequestDto(
                 "Wojciech Drozdowski",
                 "wojciech.drozdowski%s@gmail.com".formatted(randomEmailPrefix),
@@ -131,7 +216,7 @@ public class UserManagementSmokeTest {
         Assert.assertNotNull(newUser.id());
     }
 
-    /*@Test
+    *//*@Test
     public void shouldGetUserInformationById(){
         //define expected user name
         // add create user call here and extract the id
@@ -146,7 +231,7 @@ public class UserManagementSmokeTest {
         //send request
         //get response
         //verify user name as expected
-    }*/
+    }*//*
     @Test
     public void shoudVerifyUserByName(){
         String randomEmailPrefix = RandomStringUtils.randomAlphanumeric(5);
@@ -209,7 +294,6 @@ public class UserManagementSmokeTest {
         req.basePath(ENDPOINT_WITH_ID).pathParam("userId", user.id());
         req.get().then()
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("user_schema.json"));
-    }
-
+    }*/
 
 }

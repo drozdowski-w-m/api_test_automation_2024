@@ -18,6 +18,7 @@
         <slf4j.version>2.0.7</slf4j.version>
         <fasterxml.jackson.version>2.15.2</fasterxml.jackson.version>
         <token>edb4afe94ffa5dd5ee817c3eb2ff3a0408777f6781098e96969cd9cb742050d4</token>
+        <host>https://gorest.co.in/</host>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.testng/testng -->
@@ -86,7 +87,11 @@
             <artifactId>json-schema-validator</artifactId>
             <version>${restassured.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
 
     </dependencies>
 
